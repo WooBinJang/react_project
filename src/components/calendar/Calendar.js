@@ -5,7 +5,7 @@ import "react-calendar/dist/Calendar.css"; // css import
 import styled from "styled-components";
 import StorageAPI from "../../data/StorageAPI";
 import TransactionPlanAPI from "../../data/TransactionPlanAPI";
-
+import "./Calendar.css";
 function Calendar() {
   const imageStorage = new StorageAPI();
   const [value, onChange] = useState(new Date(2022, 2, 24));
@@ -13,16 +13,15 @@ function Calendar() {
   const [mark, setMark] = useState([]);
 
   useEffect(() => {
-    TransactionPlan.map(async (data) => {
+    TransactionPlan.map((data) => {
       let dateFormat = moment(data.next_payment_ymd).format("YYYY-MM-DD");
-      await imageStorage
+      imageStorage
         .downloadB64(data.management_service.image_id)
         .then(({ file_b64 }) => {
           mark.push({ date: dateFormat, image: file_b64 });
         });
     });
   }, []);
-  console.log(mark);
   const CalendarContainer = styled.div`
     button {
       border: 0;
@@ -33,10 +32,6 @@ function Calendar() {
 
       &:hover {
         background-color: #556b55;
-      }
-
-      &:active {
-        background-color: #a5c1a5;
       }
     }
     .react-calendar__tile--active {
@@ -51,28 +46,28 @@ function Calendar() {
       <CalendarContainer>
         <CalendarTag
           onChange={onChange}
-          formatDay={(locale, date) => moment(date).format("D")} // 날'일' 제외하고 숫자만 보이도록 설정
+          formatDay={(locale, date) => moment(date).format("D")}
           minDetail="month"
           showNeighboringMonth={false}
           value={value}
           showNavigation={false}
-          tileContent={({ date }) => {
+          tileContent={({ date, view }) => {
+            // 추가할 html 태그를 변수 초기화
+            let html = [];
+            // 현재 날짜가 post 작성한 날짜 배열(mark)에 있다면, dot div 추가
             if (
               mark.find((x) => x.date === moment(date).format("YYYY-MM-DD"))
             ) {
-              return (
-                <>
-                  <div className="flex justify-center items-center absoluteDiv">
-                    <div className="dot">
-                      {/* <img
-                        src={"data:image/jpeg;base64," + mark[0].image}
-                        alt=""
-                      /> */}
-                    </div>
-                  </div>
-                </>
-              );
+              html.push(<div className="dot"></div>);
             }
+            // 다른 조건을 주어서 html.push 에 추가적인 html 태그를 적용할 수 있음.
+            return (
+              <>
+                <div className="flex justify-center items-center absoluteDiv">
+                  {html}
+                </div>
+              </>
+            );
           }}
         />
       </CalendarContainer>

@@ -1,33 +1,44 @@
 import Calendar from "../calendar/Calendar";
 import "./Layout.css";
-import moment from "moment";
 import React, { useEffect, useState } from "react";
 import "react-calendar/dist/Calendar.css";
-import StorageAPI from "../../data/StorageAPI";
-import TransactionPlanAPI from "../../data/TransactionPlanAPI";
-function Layout() {
-  const imageStorage = new StorageAPI();
-  const TransactionPlan = new TransactionPlanAPI().getUserTransactionPlans();
-  const [userData, setUserData] = useState([]);
-  useEffect(() => {
-    TransactionPlan.map(async (data) => {
-      let dateFormat = await moment(data.next_payment_ymd).format("YYYY-MM-DD");
-      await imageStorage
-        .downloadB64(data.management_service.image_id)
-        .then(({ file_b64 }) => {
-          userData.push({
-            date: dateFormat,
-            image: file_b64,
-            name: data.name,
-            price: data.price,
-          });
-        });
-    });
-  }, []);
+import UserDataService from "../../service/UserDataService";
 
+function Layout() {
+  const userData = new UserDataService();
+  const [userinfo, setUserinfo] = useState(null);
+  const [loading, setLoading] = useState(false);
+  // async function a() {
+  //   return userData.getUserData();
+  // }
+
+  // useEffect(async () => {
+  //   let tmp = await a();
+  //   setUserinfo(tmp);
+  // }, []);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      setLoading(true);
+      try {
+        const response = await userData.getUserData();
+        setUserinfo(response);
+      } catch (error) {
+        console.log(error);
+      }
+      setLoading(false);
+    };
+    fetchData();
+  }, []);
+  if (loading) {
+    return <div>대기중</div>;
+  }
+  if (!userinfo) {
+    return null;
+  }
   return (
     <div className="Layout">
-      <Calendar userData={userData} />
+      <Calendar userData={userinfo} />
     </div>
   );
 }

@@ -8,14 +8,6 @@ function Layout() {
   const userData = new UserDataService();
   const [userinfo, setUserinfo] = useState(null);
   const [loading, setLoading] = useState(false);
-  // async function a() {
-  //   return userData.getUserData();
-  // }
-
-  // useEffect(async () => {
-  //   let tmp = await a();
-  //   setUserinfo(tmp);
-  // }, []);
 
   useEffect(() => {
     const fetchData = async () => {

@@ -1,0 +1,30 @@
+.CalendarHeader {
+  padding-top: 20px;
+  padding: 16px;
+}
+.CalendarHeader-back-btn {
+  border: none;
+  background-color: transparent;
+  font-weight: bolder;
+  color: #0068ff;
+  font-size: 20px;
+  cursor: pointer;
+}
+.CalendarHeader-month {
+  color: #0068ff;
+  font-weight: 600;
+  font-size: 14px;
+  line-height: 22px;
+}
+.CalendarHeader-content-box {
+  margin-top: 14px;
+}
+.CalendarHeader-price {
+  font-weight: 600;
+  font-size: 24px;
+  line-height: 32px;
+}
+
+.CalendarHeader-price-gray {
+  color: #c1c7cd;
+}
